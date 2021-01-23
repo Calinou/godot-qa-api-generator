@@ -3,6 +3,7 @@
 import asyncio
 import json
 import os
+from typing import Any, Dict, List
 
 import aiohttp
 from bs4 import BeautifulSoup
@@ -14,13 +15,16 @@ GODOT_QA_URL: Final = "https://godotengine.org/qa"
 # Example of expected JSON output:
 # {
 #     "data": {
-#         "questions": {
-#             "title": "Hello world",
-#             "author": "Someone",
-#             "date_posted": "2020-12-30T13:00:00Z",
-#             "category": "Engine",
-#             "score": 4
-#         }
+#         "questions": [
+#             {
+#                 "title": "Hello world",
+#                 "author": "Someone",
+#                 "date_posted": "Nov 19, 2020",
+#                 "category": "Engine",
+#                 "answers": 2,
+#                 "score": -1
+#             }
+#         ]
 #     }
 # }
 
@@ -43,12 +47,52 @@ async def main() -> None:
                 async with session.get(f"{GODOT_QA_URL}/search?q={tag}") as response:
                     print(f'Parsing HTML for "{tag}"...')
                     soup = BeautifulSoup(await response.text(), "html.parser")
-                    # print(soup.get_text())
+                    questions: List[Dict[str, Any]] = []
+
+                    for question in soup.select(".qa-q-list .qa-q-list-item"):
+                        questions.append(
+                            {
+                                "title": question.select(".qa-q-item-title")[0]
+                                .get_text()
+                                .strip(),
+                                "author": question.select(".qa-user-link")[0]
+                                .get_text()
+                                .strip(),
+                                "date_posted": question.select(".qa-q-item-when-data")[
+                                    0
+                                ]
+                                .get_text()
+                                .strip(),
+                                "category": question.select(".qa-category-link")[0]
+                                .get_text()
+                                .strip(),
+                                "answers": int(
+                                    question.select(".qa-a-count-data")[0]
+                                    .get_text()
+                                    .strip()
+                                ),
+                                "score": int(
+                                    question.select(".qa-netvote-count-data")[0]
+                                    .get_text()
+                                    .replace(
+                                        "–", "-"
+                                    )  # Use ASCII minus symbol so the number can be parsed as an integer.
+                                    .strip()
+                                ),
+                            }
+                        )
+
                     output_path = f"output/{tag}.json"
                     with open(output_path, "w") as output_file:
-                        output_file.write(json.dumps({"hello": 123}))
-                        # End the file with a blank line just in case.
-                        output_file.write("\n")
+                        output_file.write(
+                            json.dumps(
+                                {
+                                    "data": {
+                                        "questions": questions,
+                                    },
+                                }
+                            )
+                        )
                         print(f'Successfully generated JSON for "{tag}": {output_path}')
 
     print("Finished generating all JSON files.")
