@@ -82,6 +82,9 @@ async def main() -> None:
                             }
                         )
 
+                    # Sort questions by votes from most to least popular.
+                    questions.sort(reverse=True, key=lambda question: question["score"])
+
                     output_path = f"output/{tag}.json"
                     with open(output_path, "w") as output_file:
                         output_file.write(
