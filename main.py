@@ -18,11 +18,9 @@ GODOT_QA_URL: Final = "https://godotengine.org/qa"
 #         "questions": [
 #             {
 #                 "title": "Hello world",
-#                 "author": "Someone",
-#                 "date_posted": "Nov 19, 2020",
-#                 "category": "Engine",
 #                 "answers": 2,
-#                 "score": -1
+#                 "score": -1,
+#                 "url": "https://example.com"
 #             }
 #         ]
 #     }
@@ -55,17 +53,6 @@ async def main() -> None:
                                 "title": question.select(".qa-q-item-title")[0]
                                 .get_text()
                                 .strip(),
-                                "author": question.select(".qa-user-link")[0]
-                                .get_text()
-                                .strip(),
-                                "date_posted": question.select(".qa-q-item-when-data")[
-                                    0
-                                ]
-                                .get_text()
-                                .strip(),
-                                "category": question.select(".qa-category-link")[0]
-                                .get_text()
-                                .strip(),
                                 "answers": int(
                                     question.select(".qa-a-count-data")[0]
                                     .get_text()
@@ -79,6 +66,13 @@ async def main() -> None:
                                     )  # Use ASCII minus symbol so the number can be parsed as an integer.
                                     .strip()
                                 ),
+                                "url": question.select(".qa-q-item-title a")[0]["href"]
+                                .split("?")[
+                                    0
+                                ]  # Remove GET parameter and hash fragment from the URL.
+                                .replace(
+                                    "./", f"{GODOT_QA_URL}/"
+                                ),  # Turn relative URL into an absolute URL
                             }
                         )
 
