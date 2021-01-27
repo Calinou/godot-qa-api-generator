@@ -6,7 +6,7 @@ import os
 from typing import Any, Dict, List
 
 import aiohttp
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup  # type: ignore
 from typing_extensions import Final
 
 GODOT_QA_URL: Final = "https://godotengine.org/qa"
