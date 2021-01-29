@@ -3,9 +3,8 @@
 Generates a static REST API that returns the 10 most popular questions for
 predefined tags.
 
-This API integrates with the
-[`godot_questions_answers` Sphinx extension](https://github.com/godotengine/godot-docs/blob/master/_extensions/godot_questions_answers.py)
-which acts as a frontend.
+This API integrates with the `godot_questions_answers` Sphinx extension which
+acts as a frontend.
 
 ## Installation
 
