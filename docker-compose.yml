@@ -1,19 +1,6 @@
 version: "3.8"
 services:
 
-  # Serves the generated JSON files. In production, this web server should be
-  # put behind a reverse proxy for TLS.
-  nginx:
-    image: nginx:1.19-alpine
-    environment:
-      VIRTUAL_HOST: testing.local
-    restart: always
-    ports:
-      - "8080:80"
-    volumes:
-      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./output:/app/output:ro
-
   # Generates the JSON files at regular intervals by running the script using cron.
   app:
     build:
@@ -22,4 +9,7 @@ services:
     working_dir: /app
     restart: always
     volumes:
-      - ./output:/app/output
+      - api-files:/app/output
+
+volumes:
+  api-files:
