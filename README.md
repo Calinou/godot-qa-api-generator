@@ -6,11 +6,37 @@ predefined tags.
 This API integrates with the `godot_questions_answers` Sphinx extension which
 acts as a frontend.
 
+The list of tags to search for is specified in [`tags.conf`](/tags.conf).
+
 ## Installation
 
-This guide should be followed in both development and production environments.
+### With Docker
 
-- Specify tags to search for in `tags.conf`.
+Python dependencies are installed automatically when building the container.
+Use one of the commands below depending on your use case (development or production):
+
+#### Development
+
+```bash
+docker-compose up
+```
+
+A local web server will be hosted at `http://localhost:8080`
+(example URL: `http://localhost:8080/animation.json`).
+Files will also be available in `output/` for inspection.
+
+#### Production
+
+```bash
+docker-compose -f docker-compose.yml up
+```
+
+No local web server will be hosted. Instead, a web server on the same system is
+expected to be used to serve the JSON API files. Files will be stored in the
+`api-files` Docker volume and won't be available in `output/` for inspection.
+
+### Without Docker
+
 - Install [Python](https://python.org) 3.7 or later.
 - Open a terminal, `cd` to the cloned repository and run
   `pip3 install --user -r requirements.txt`.
