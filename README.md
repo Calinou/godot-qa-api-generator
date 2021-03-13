@@ -23,7 +23,7 @@ docker-compose up
 
 A local web server will be hosted at `http://localhost:8080`
 (example URL: `http://localhost:8080/animation.json`).
-Files will also be available in `output/` for inspection.
+Generated JSON files will also be available in `output/` for inspection.
 
 #### Production
 
